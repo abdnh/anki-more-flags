@@ -87,7 +87,7 @@ def load_custom_flags(self: FlagManager) -> None:
 
 def rename_flag(self: FlagManager, flag_index: int, new_name: str, _old: Any) -> None:
     if flag_index <= original_flags_count:
-        _old(self, flag_index, new_name, _old)
+        _old(self, flag_index, new_name)
         return
     new_flags = config["flags"]
     config["flags"][flag_index - original_flags_count - 1]["label"] = new_name
