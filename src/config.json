@@ -1,0 +1,9 @@
+{
+    "flags": [
+        {
+            "color_dark": "#ffee75",
+            "color_light": "#ffd800",
+            "label": "Custom Flag 1"
+        }
+    ]
+}

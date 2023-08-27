@@ -1,0 +1,22 @@
+{
+    "properties": {
+        "flags": {
+            "items": {
+                "properties": {
+                    "color_dark": {
+                        "type": "string"
+                    },
+                    "color_light": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        }
+    },
+    "type": "object"
+}
