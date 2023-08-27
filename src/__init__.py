@@ -53,7 +53,6 @@ def anki_color_for_custom_flag(flag: dict) -> Tuple[str, str]:
 def load_custom_flags(self: FlagManager) -> None:
     global original_flags_count
     original_flags_count = len(self._flags)
-    print(f"{original_flags_count=}")
     path = ":/icons/flag.svg" if anki_version < (2, 1, 55) else "icons:flag-variant.svg"
     if hasattr(colors, "FG_DISABLED"):
         color = colors.FG_DISABLED
@@ -102,7 +101,6 @@ def setup_browser_menus(self: Browser) -> None:
     for i, flag in enumerate(config["flags"], start=1):
         action = QAction(self)
         action.setCheckable(True)
-        print(f"{original_flags_count=} {i=}")
         action.setShortcut(f"Ctrl+{i+original_flags_count}")
         setattr(self.form, f"custom_flag_action_{i}", action)
         self.form.menuFlag.addAction(action)
