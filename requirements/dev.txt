@@ -212,8 +212,10 @@ werkzeug==2.3.7
     # via flask
 wheel==0.41.2
     # via pip-tools
-winrt==1.0.21033.1
-    # via aqt
+winrt==1.0.21033.1 ; sys_platform == "win32"
+    # via
+    #   -r requirements/dev.in
+    #   aqt
 wrapt==1.15.0
     # via astroid
 zipp==3.16.2
