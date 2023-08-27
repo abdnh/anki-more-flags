@@ -10,6 +10,10 @@ The custom flags should behave like standard ones for the most part, but there a
 -   The "No Flag" sidebar item doesn't understand custom flags, so cards flagged with custom flags will show up in search here. This might be fixed in a future version.
 -   Custom flags only work on the computer version.
 
+## Download
+
+You can download the add-on from AnkiWeb: [146757953](https://ankiweb.net/shared/info/146757953)
+
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes.
