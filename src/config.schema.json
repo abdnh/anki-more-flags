@@ -11,6 +11,9 @@
                     },
                     "label": {
                         "type": "string"
+                    },
+                    "shortcut": {
+                        "type": "string"
                     }
                 },
                 "type": "object"

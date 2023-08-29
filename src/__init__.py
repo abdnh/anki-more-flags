@@ -101,7 +101,8 @@ def setup_browser_menus(self: Browser) -> None:
     for i, flag in enumerate(config["flags"], start=1):
         action = QAction(self)
         action.setCheckable(True)
-        action.setShortcut(f"Ctrl+{i+original_flags_count}")
+        shortcut = flag.get("shortcut", f"Ctrl+{i+original_flags_count}")
+        action.setShortcut(shortcut)
         setattr(self.form, f"custom_flag_action_{i}", action)
         self.form.menuFlag.addAction(action)
 
@@ -182,7 +183,12 @@ def show_reviewer_contextmenu(self: Reviewer, _old: Any) -> None:
         if current_flag:
             current_flag += original_flags_count
     all_flags = self.mw.flags.all()
+    custom_flags = config["flags"]
     for i, opt in enumerate(flag_opts):
+        if i >= original_flags_count:
+            opt[1] = custom_flags[i - original_flags_count].get(
+                "shortcut", f"Ctrl+{i+1}"
+            )
         opt[-1] = {"checked": all_flags[i].index == current_flag}
 
     m = QMenu(self.mw)
@@ -191,6 +197,23 @@ def show_reviewer_contextmenu(self: Reviewer, _old: Any) -> None:
     gui_hooks.reviewer_will_show_context_menu(self, m)
     qtMenuShortcutWorkaround(m)
     m.popup(QCursor.pos())
+
+
+def reviewer_shortcut_keys(
+    self: Reviewer,
+    _old: Any,
+) -> Sequence[Union[Tuple[str, Callable], Tuple[Qt.Key, Callable]]]:
+    keys = _old(self)
+    first_custom_flag_idx = next(
+        (i for i, t in enumerate(keys) if t[0] == f"Ctrl+{original_flags_count+1}"),
+        None,
+    )
+    for i, flag in enumerate(config["flags"]):
+        if "shortcut" in flag:
+            key = list(keys[first_custom_flag_idx + i])
+            key[0] = flag["shortcut"]
+            keys[first_custom_flag_idx + i] = tuple(key)
+    return keys
 
 
 def clear_custom_flag(self: Card, flag: int) -> None:
@@ -325,6 +348,9 @@ def patch() -> None:
     )
     Reviewer.showContextMenu = wrap(  # type: ignore[method-assign]
         Reviewer.showContextMenu, show_reviewer_contextmenu, "around"
+    )
+    Reviewer._shortcutKeys = wrap(  # type: ignore[method-assign]
+        Reviewer._shortcutKeys, reviewer_shortcut_keys, "around"
     )
     Card.set_user_flag = wrap(Card.set_user_flag, clear_custom_flag, "after")  # type: ignore[method-assign]
     Collection.set_user_flag_for_cards = wrap(  # type: ignore[method-assign]
