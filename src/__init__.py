@@ -29,7 +29,7 @@ except ImportError:
         return color
 
 
-from .config import config
+from .config import CustomFlag, config
 
 anki_version = tuple(int(p) for p in appVersion.split("."))
 original_flags_count = 0
@@ -40,12 +40,12 @@ def supports_custom_data_prop_search() -> bool:
     return anki_version >= (2, 1, 64)
 
 
-def anki_color_for_custom_flag(flag: dict) -> Tuple[str, str]:
+def anki_color_for_custom_flag(flag: CustomFlag) -> Tuple[str, str]:
     # NOTE: Format changed to dict in 2.1.55: https://github.com/ankitects/anki/commit/0c340c4f741c89bcc80f987ee236d506de6a1ad2
     color = (
-        (flag["color_light"], flag["color_dark"])
+        (flag.color_light, flag.color_dark)
         if anki_version < (2, 1, 55)
-        else {"light": flag["color_light"], "dark": flag["color_dark"]}
+        else {"light": flag.color_light, "dark": flag.color_dark}
     )
     return cast(Tuple[str, str], color)
 
@@ -64,7 +64,7 @@ def load_custom_flags(self: FlagManager) -> None:
     )
 
     for i, flag in enumerate(
-        config["flags"],
+        config.flags,
         start=1,
     ):
         color_obj = anki_color_for_custom_flag(flag)
@@ -76,7 +76,7 @@ def load_custom_flags(self: FlagManager) -> None:
         self._flags.append(
             Flag(
                 original_flags_count + i,
-                flag["label"],
+                flag.label,
                 icon.with_color(color_obj),
                 search_node,
                 f"custom_flag_action_{i}",
@@ -88,9 +88,9 @@ def rename_flag(self: FlagManager, flag_index: int, new_name: str, _old: Any) ->
     if flag_index <= original_flags_count:
         _old(self, flag_index, new_name)
         return
-    new_flags = config["flags"]
-    config["flags"][flag_index - original_flags_count - 1]["label"] = new_name
-    config["flags"] = new_flags
+    new_flags = config.flags
+    new_flags[flag_index - original_flags_count - 1].label = new_name
+    config.flags = new_flags
     self.get_flag(flag_index).label = new_name
     gui_hooks.flag_label_did_change()
 
@@ -98,10 +98,10 @@ def rename_flag(self: FlagManager, flag_index: int, new_name: str, _old: Any) ->
 def setup_browser_menus(self: Browser) -> None:
     # Make sure flags are loaded
     mw.flags.all()
-    for i, flag in enumerate(config["flags"], start=1):
+    for i, flag in enumerate(config.flags, start=1):
         action = QAction(self)
         action.setCheckable(True)
-        shortcut = flag.get("shortcut", f"Ctrl+{i+original_flags_count}")
+        shortcut = flag.shortcut or f"Ctrl+{i+original_flags_count}"
         action.setShortcut(shortcut)
         setattr(self.form, f"custom_flag_action_{i}", action)
         self.form.menuFlag.addAction(action)
@@ -122,9 +122,9 @@ def set_flag_on_current_card(self: Reviewer, desired_flag: int, _old: Any) -> No
 def set_flag_css_vars(web_content: WebContent, context: Optional[Any]) -> None:
     if not isinstance(context, Reviewer):
         return
-    flags = config["flags"]
-    light_colors = [flag["color_light"] for flag in flags]
-    dark_colors = [flag["color_dark"] for flag in flags]
+    flags = config.flags
+    light_colors = [flag.color_light for flag in flags]
+    dark_colors = [flag.color_dark for flag in flags]
 
     def color_list_to_defs(colors: list[str]) -> str:
         return ";\n".join(
@@ -183,12 +183,10 @@ def show_reviewer_contextmenu(self: Reviewer, _old: Any) -> None:
         if current_flag:
             current_flag += original_flags_count
     all_flags = self.mw.flags.all()
-    custom_flags = config["flags"]
+    custom_flags = config.flags
     for i, opt in enumerate(flag_opts):
         if i >= original_flags_count:
-            opt[1] = custom_flags[i - original_flags_count].get(
-                "shortcut", f"Ctrl+{i+1}"
-            )
+            opt[1] = custom_flags[i - original_flags_count].shortcut or f"Ctrl+{i+1}"
         opt[-1] = {"checked": all_flags[i].index == current_flag}
 
     m = QMenu(self.mw)
@@ -208,10 +206,10 @@ def reviewer_shortcut_keys(
         (i for i, t in enumerate(keys) if t[0] == f"Ctrl+{original_flags_count+1}"),
         None,
     )
-    for i, flag in enumerate(config["flags"]):
-        if "shortcut" in flag:
+    for i, flag in enumerate(config.flags):
+        if flag.shortcut:
             key = list(keys[first_custom_flag_idx + i])
-            key[0] = flag["shortcut"]
+            key[0] = flag.shortcut
             keys[first_custom_flag_idx + i] = tuple(key)
     return keys
 
@@ -272,7 +270,7 @@ def on_browser_did_fetch_row(
         card = mw.col.get_card(card_or_note_id)
         flag_idx = get_card_custom_flag(card)
         if flag_idx:
-            flag = config["flags"][flag_idx - 1]
+            flag = config.flags[flag_idx - 1]
             color = anki_color_for_custom_flag(flag)
             color = adjusted_bg_color(color)
             row.color = color

@@ -13,7 +13,14 @@
                         "type": "string"
                     },
                     "shortcut": {
-                        "type": "string"
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     }
                 },
                 "type": "object"

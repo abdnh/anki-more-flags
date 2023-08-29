@@ -1,8 +1,17 @@
-from typing import Any
+import dataclasses
+from typing import Any, List, Optional
 
 from aqt import mw
 
 from .consts import ADDON_MODULE
+
+
+@dataclasses.dataclass
+class CustomFlag:
+    label: str
+    color_light: str
+    color_dark: str
+    shortcut: Optional[str] = None
 
 
 class Config:
@@ -34,6 +43,14 @@ class Config:
 
     def get_default(self, key: str) -> Any:
         return self._defaults.get(key, None)
+
+    @property
+    def flags(self) -> List[CustomFlag]:
+        return [CustomFlag(**flag) for flag in config["flags"]]
+
+    @flags.setter
+    def flags(self, flags: List[CustomFlag]) -> None:
+        self["flags"] = [dataclasses.asdict(flag) for flag in flags]
 
 
 config = Config()
