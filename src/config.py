@@ -15,6 +15,9 @@ class Config:
 
     def _config_updated_action(self, new_config: dict) -> None:
         self._config.update(new_config)
+        # Reload flags
+        mw.flags._flags = []
+        mw.flags._load_flags()
 
     def _write(self) -> None:
         mw.addonManager.writeConfig(__name__, self._config)
