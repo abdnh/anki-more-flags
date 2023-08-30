@@ -37,11 +37,13 @@ repos:
             entry: python -m pylint src tests
             language: system
             types: [python]
+            require_serial: true
           - id: mypy
             name: mypy
             entry: python -m mypy
             language: system
             types: [python]
+            require_serial: true
           - id: pip-compile
             name: pip-compile base
             entry: python -m ankiscripts.update_deps --type base
