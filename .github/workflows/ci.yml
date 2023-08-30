@@ -27,7 +27,7 @@ jobs:
               run: .github/workflows/install_deps.sh
 
             - name: Run checks
-              run: SKIP=pip-compile pre-commit run --all-files
+              run: make pylint && SKIP=pip-compile,pylint pre-commit run --all-files
 
             - name: Run tests
               run: make test
