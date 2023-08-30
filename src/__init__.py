@@ -1,6 +1,6 @@
 import json
 import sys
-from typing import Any, Optional, Sequence, Tuple, cast
+from typing import Any, Dict, Optional, Sequence, Tuple, cast
 
 from anki.cards import Card, CardId
 from anki.collection import Collection, OpChangesWithCount, SearchNode
@@ -23,10 +23,10 @@ from aqt.utils import qtMenuShortcutWorkaround, tooltip, tr
 from aqt.webview import WebContent
 
 try:
-    from aqt.browser.table import adjusted_bg_color  # type: ignore
+    from aqt.browser.table import adjusted_bg_color
 except ImportError:
 
-    def adjusted_bg_color(color: Tuple[str, str]) -> Tuple[str, str]:
+    def adjusted_bg_color(color: Tuple[str, str]) -> Tuple[str, str]:  # type: ignore
         return color
 
 
@@ -46,14 +46,14 @@ def supports_custom_data_prop_search() -> bool:
     return anki_version >= (2, 1, 64)
 
 
-def anki_color_for_custom_flag(flag: CustomFlag) -> Tuple[str, str]:
+def anki_color_for_custom_flag(flag: CustomFlag) -> Dict[str, str]:
     # NOTE: Format changed to dict in 2.1.55: https://github.com/ankitects/anki/commit/0c340c4f741c89bcc80f987ee236d506de6a1ad2
     color = (
         (flag.color_light, flag.color_dark)
         if anki_version < (2, 1, 55)
         else {"light": flag.color_light, "dark": flag.color_dark}
     )
-    return cast(Tuple[str, str], color)
+    return cast(Dict[str, str], color)
 
 
 def load_custom_flags(self: FlagManager) -> None:
@@ -63,7 +63,7 @@ def load_custom_flags(self: FlagManager) -> None:
     if hasattr(colors, "FG_DISABLED"):
         color = colors.FG_DISABLED
     else:
-        color = colors.DISABLED
+        color = colors.DISABLED  # type: ignore[attr-defined] # pylint: disable=no-member
     icon = ColoredIcon(
         path=path,
         color=color,

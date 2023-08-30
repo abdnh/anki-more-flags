@@ -1,29 +1,12 @@
 from typing import Optional, cast
 
 import webcolors
-from aqt.qt import (
-    QCloseEvent,
-    QColor,
-    QColorDialog,
-    QDialog,
-    QHBoxLayout,
-    QHeaderView,
-    QIcon,
-    QKeyEvent,
-    QKeySequence,
-    QPushButton,
-    Qt,
-    QTableWidget,
-    QTableWidgetItem,
-    QWidget,
-    pyqtSignal,
-)
+from aqt.qt import *
 from aqt.utils import askUser, restoreGeom, saveGeom
 
 from ..config import CustomFlag, config
 from ..consts import ADDON_DIR, ADDON_MODULE, ADDON_NAME
 from ..forms.config import Ui_Dialog
-from . import qconnect
 
 
 def qcolor_to_hex(color: QColor) -> str:
