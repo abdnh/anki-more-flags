@@ -1,6 +1,6 @@
 import json
 import sys
-from typing import Any, Dict, Optional, Sequence, Tuple, cast
+from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast
 
 from anki.cards import Card, CardId
 from anki.collection import Collection, OpChangesWithCount, SearchNode
