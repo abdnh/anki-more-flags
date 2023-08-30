@@ -1,0 +1,2 @@
+webcolors==1.13
+    # via -r requirements/bundle.in

@@ -1,4 +1,5 @@
 import json
+import sys
 from typing import Any, Optional, Sequence, Tuple, cast
 
 from anki.cards import Card, CardId
@@ -29,7 +30,12 @@ except ImportError:
         return color
 
 
+from .consts import ADDON_DIR
+
+sys.path.append(str(ADDON_DIR / "vendor"))
+
 from .config import CustomFlag, config
+from .gui.config import ConfigDialog
 
 anki_version = tuple(int(p) for p in appVersion.split("."))
 original_flags_count = 0
@@ -334,6 +340,11 @@ def after_flag_tree_build(self: SidebarTreeView, root: SidebarItem) -> None:
     # flag_none_item.search_node = mw.col.group_searches(node, custom_node, joiner="AND")
 
 
+def on_config() -> None:
+    dialog = ConfigDialog(mw)
+    dialog.open()
+
+
 def patch() -> None:
     FlagManager._load_flags = wrap(FlagManager._load_flags, load_custom_flags, "after")  # type: ignore[method-assign]
     FlagManager.rename_flag = wrap(FlagManager.rename_flag, rename_flag, "around")  # type: ignore[method-assign]
@@ -368,6 +379,7 @@ def patch() -> None:
 def register_hooks() -> None:
     gui_hooks.webview_will_set_content.append(set_flag_css_vars)
     gui_hooks.browser_did_fetch_row.append(on_browser_did_fetch_row)
+    mw.addonManager.setConfigAction(__name__, on_config)
 
 
 patch()

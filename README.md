@@ -1,6 +1,8 @@
 # More Flags
 
-This Anki add-on adds the ability to add more card flags. You can add flags and customize their labels, colors and shortcuts from the config under _Tools > Add-ons_.
+This Anki add-on adds the ability to add more card flags. You can add flags and customize their labels, colors and shortcuts from the config window under _Tools > Add-ons > Config_.
+
+![config window](images/config.png)
 
 The add-on should work on Anki 2.1.46+.
 
@@ -17,6 +19,10 @@ You can download the add-on from AnkiWeb: [146757953](https://ankiweb.net/shared
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes.
+
+## Credit
+
+Icons are from [Bootstrap Icons](https://getbootstrap.com/).
 
 ## Support & feature requests
 
