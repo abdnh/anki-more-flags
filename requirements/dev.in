@@ -1,6 +1,6 @@
 -r base.in
 -r bundle.in
-aqt
+aqt[qt6]
 # Transitive Windows dependencies
 psutil; sys.platform == "win32"
 pywin32; sys.platform == "win32"
