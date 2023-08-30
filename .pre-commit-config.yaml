@@ -34,7 +34,7 @@ repos:
       hooks:
           - id: pylint
             name: pylint
-            entry: python -m pylint src tests -j 1
+            entry: python -m pylint src tests
             language: system
             types: [python]
             require_serial: true
