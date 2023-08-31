@@ -275,7 +275,7 @@ def on_browser_did_fetch_row(
         card_or_note_id = cast(CardId, card_or_note_id)
         card = mw.col.get_card(card_or_note_id)
         flag_idx = get_card_custom_flag(card)
-        if flag_idx:
+        if flag_idx and flag_idx <= len(config.flags):
             flag = config.flags[flag_idx - 1]
             color = anki_color_for_custom_flag(flag)
             color = adjusted_bg_color(color)
