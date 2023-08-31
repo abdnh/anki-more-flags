@@ -125,7 +125,9 @@ def set_flag_on_current_card(self: Reviewer, desired_flag: int, _old: Any) -> No
     set_card_custom_flag(self.card, flag)
 
 
-def set_flag_css_vars(web_content: WebContent, context: Optional[Any]) -> None:
+def on_webview_will_set_content(
+    web_content: WebContent, context: Optional[Any]
+) -> None:
     if not isinstance(context, Reviewer):
         return
     flags = config.flags
@@ -145,6 +147,12 @@ def set_flag_css_vars(web_content: WebContent, context: Optional[Any]) -> None:
     }
     :root.night-mode {
         %(dark_colors)s
+    }
+    #flag-label {
+        padding-left: 0.5em;
+        font-size: .6em;
+        color: #666;
+        -webkit-text-stroke: initial;
     }
 </style>
 """ % {
@@ -190,6 +198,24 @@ def update_flag_icon(self: Reviewer, _old: Any) -> None:
             custom_flag_idx += original_flags_count
             flag = custom_flag_idx
     self.web.eval(f"_drawFlag({flag});")
+
+    if config["show_flag_labels"]:
+        label = mw.flags.all()[flag].label
+        self.web.eval(
+            """
+            (() => {
+                const flag = document.getElementById('_flag');
+                let flagLabel = document.querySelector('#flag-label');
+                if(!flagLabel) {
+                    flagLabel = document.createElement('span');
+                    flag.insertAdjacentElement('beforeend', flagLabel);
+                }
+                flagLabel.id = 'flag-label';
+                flagLabel.textContent = %s;
+            })();
+            """
+            % json.dumps(label)
+        )
 
 
 def show_reviewer_contextmenu(self: Reviewer, _old: Any) -> None:
@@ -390,7 +416,7 @@ def patch() -> None:
 
 
 def register_hooks() -> None:
-    gui_hooks.webview_will_set_content.append(set_flag_css_vars)
+    gui_hooks.webview_will_set_content.append(on_webview_will_set_content)
     gui_hooks.browser_did_fetch_row.append(on_browser_did_fetch_row)
     mw.addonManager.setConfigAction(__name__, on_config)
 

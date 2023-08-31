@@ -155,6 +155,7 @@ class ConfigDialog(QDialog):
         self.setContentsMargins(0, 0, 0, 0)
         self.flag_list = FlagListWidget(self)
         self.form.flag_list_container.addWidget(self.flag_list)
+        self.form.show_flag_labels.setChecked(config["show_flag_labels"])
         qconnect(self.form.save_button.clicked, self.on_save)
         qconnect(self.form.new_button.clicked, self.on_new)
         qconnect(self.form.delete_button.clicked, self.on_delete)
@@ -177,6 +178,7 @@ class ConfigDialog(QDialog):
             new_flags.append(CustomFlag(label, color_light, color_dark, shortcut))
 
         config.flags = new_flags
+        config["show_flag_labels"] = self.form.show_flag_labels.isChecked()
         showInfo(
             "Changes will take effect when you restart Anki.", self, title=ADDON_NAME
         )

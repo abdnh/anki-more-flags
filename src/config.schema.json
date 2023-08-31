@@ -26,6 +26,9 @@
                 "type": "object"
             },
             "type": "array"
+        },
+        "show_flag_labels": {
+            "type": "boolean"
         }
     },
     "type": "object"

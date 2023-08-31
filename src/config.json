@@ -5,5 +5,6 @@
             "color_light": "#ffd800",
             "label": "Custom Flag 1"
         }
-    ]
+    ],
+    "show_flag_labels": false
 }
