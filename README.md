@@ -10,6 +10,7 @@ The custom flags should behave like standard ones for the most part, but there a
 
 -   Searching for custom flags is only supported on 2.1.64+.
 -   The "No Flag" sidebar item doesn't understand custom flags, so cards flagged with custom flags will show up in search here. This might be fixed in a future version.
+-   When you delete a custom flag from the config, it's not removed from the cards. So if you later add a new flag in place of the old one the cards will automatically reflect the new flag. This might change in the future.
 -   Custom flags only work on the computer version.
 
 ## Download
