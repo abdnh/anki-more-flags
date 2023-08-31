@@ -174,9 +174,10 @@ def set_card_custom_flag(card: Card, flag: int, update: bool = True) -> None:
 def update_flag_icon(self: Reviewer, _old: Any) -> None:
     flag = self.card.user_flag()
     if not flag:
-        flag = get_card_custom_flag(self.card)
-        if flag:
-            flag += original_flags_count
+        custom_flag_idx = get_card_custom_flag(self.card)
+        if custom_flag_idx and custom_flag_idx <= len(config.flags):
+            custom_flag_idx += original_flags_count
+            flag = custom_flag_idx
     self.web.eval(f"_drawFlag({flag});")
 
 
