@@ -164,9 +164,12 @@ def set_card_custom_flag(card: Card, flag: int, update: bool = True) -> None:
     data_prop_name = "data" if hasattr(card, "data") else "custom_data"
     raw_data = getattr(card, data_prop_name)
     card_data = json.loads(raw_data) if raw_data else {}
-    card_data[CUSTOM_DATA_KEY] = flag
+    if flag:
+        card_data[CUSTOM_DATA_KEY] = flag
+        card.flags = 0
+    elif CUSTOM_DATA_KEY in card_data:
+        del card_data[CUSTOM_DATA_KEY]
     setattr(card, data_prop_name, json.dumps(card_data))
-    card.flags = 0
     if update:
         CollectionOp(mw, lambda col: col.update_card(card)).run_in_background()
 
