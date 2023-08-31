@@ -2,7 +2,7 @@ from typing import Optional, cast
 
 import webcolors
 from aqt.qt import *
-from aqt.utils import askUser, restoreGeom, saveGeom
+from aqt.utils import askUser, restoreGeom, saveGeom, showInfo
 
 from ..config import CustomFlag, config
 from ..consts import ADDON_DIR, ADDON_MODULE, ADDON_NAME
@@ -177,6 +177,9 @@ class ConfigDialog(QDialog):
             new_flags.append(CustomFlag(label, color_light, color_dark, shortcut))
 
         config.flags = new_flags
+        showInfo(
+            "Changes will take effect when you restart Anki.", self, title=ADDON_NAME
+        )
 
     def on_save(self) -> None:
         self.save()
