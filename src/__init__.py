@@ -3,7 +3,7 @@ import sys
 from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast
 
 from anki.cards import Card, CardId
-from anki.collection import Collection, OpChangesWithCount, SearchNode
+from anki.collection import Collection, OpChanges, OpChangesWithCount, SearchNode
 from anki.hooks import wrap
 from aqt import appVersion, colors, gui_hooks, mw
 from aqt.browser import (
@@ -171,7 +171,15 @@ def set_card_custom_flag(card: Card, flag: int, update: bool = True) -> None:
         del card_data[CUSTOM_DATA_KEY]
     setattr(card, data_prop_name, json.dumps(card_data))
     if update:
-        CollectionOp(mw, lambda col: col.update_card(card)).run_in_background()
+
+        def op(col: Collection) -> OpChanges:
+            changes = col.update_card(card)
+            # Avoid resetting reviewer
+            # TODO: find a way to avoid a reset on undo too
+            changes.study_queues = False
+            return changes
+
+        CollectionOp(mw, op).run_in_background()
 
 
 def update_flag_icon(self: Reviewer, _old: Any) -> None:
@@ -239,9 +247,10 @@ def clear_custom_flags_for_cards(
     target = self.add_custom_undo_entry(self.tr.actions_set_flag())
     self.update_cards(cards)
     changes = _old(self, flag, cids)
-    return OpChangesWithCount(
-        count=changes.count, changes=self.merge_undo_entries(target)
-    )
+    merged_changes = self.merge_undo_entries(target)
+    merged_changes.study_queues = False
+
+    return OpChangesWithCount(count=changes.count, changes=merged_changes)
 
 
 def set_flag_of_selected_cards(self: Browser, flag: int, _old: Any) -> None:
