@@ -47,6 +47,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>new_button</tabstop>
+  <tabstop>delete_button</tabstop>
+  <tabstop>save_button</tabstop>
+  <tabstop>show_flag_labels</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
