@@ -199,8 +199,8 @@ def update_flag_icon(self: Reviewer, _old: Any) -> None:
             flag = custom_flag_idx
     self.web.eval(f"_drawFlag({flag});")
 
-    if config["show_flag_labels"] and flag < len(mw.flags.all()):
-        label = mw.flags.all()[flag].label
+    if config["show_flag_labels"] and flag <= len(mw.flags.all()):
+        label = mw.flags.all()[flag - 1].label
         self.web.eval(
             """
             (() => {
