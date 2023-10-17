@@ -9,7 +9,7 @@ The add-on should work on Anki 2.1.46+.
 The custom flags should behave like standard ones for the most part, but there are some issues to be aware of:
 
 -   Searching for custom flags is only supported on 2.1.64+.
--   The "No Flag" sidebar item doesn't understand custom flags, so cards flagged with custom flags will show up in search here. This might be fixed in a future version.
+-   The "No Flag" sidebar item only understands custom flags on Anki 23.10+.
 -   When you delete a custom flag from the config, it's not removed from the cards. So if you later add a new flag in place of the old one the cards will automatically reflect the new flag. This might change in the future.
 -   Custom flags only work on the computer version.
 

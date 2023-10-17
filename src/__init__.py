@@ -5,6 +5,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast
 from anki.cards import Card, CardId
 from anki.collection import Collection, OpChanges, OpChangesWithCount, SearchNode
 from anki.hooks import wrap
+from anki.utils import pointVersion
 from aqt import appVersion, colors, gui_hooks, mw
 from aqt.browser import (
     Browser,
@@ -352,31 +353,20 @@ def after_flag_tree_build(self: SidebarTreeView, root: SidebarItem) -> None:
     custom_node = SearchNode(parsable_text=f"prop:cdn:{CUSTOM_DATA_KEY}!=0")
     flag_root.search_node = mw.col.group_searches(node, custom_node, joiner="OR")
 
-    # "No Flag" cannot be properly modified yet due to limitations in custom data property search
-
-    # FLAG_NONE was added in 2.1.50
-    # if "FLAG_NONE" in [e.name for e in list(SidebarItemType)]:
-    #     flag_none_item = next(
-    #         (
-    #             child
-    #             for child in flag_root.children
-    #             if child.item_type == SidebarItemType.FLAG_NONE
-    #         ),
-    #         None,
-    #     )
-    # else:
-    #     flag_none_item = next(
-    #         (
-    #             child
-    #             for child in flag_root.children
-    #             if child.name == tr.browsing_no_flag()
-    #         ),
-    #         None,
-    #     )
-    # node = flag_none_item.search_node
-    # # `none` is just an example of what's needed to make this work
-    # custom_node = SearchNode(parsable_text=f"prop:cdn:{CUSTOM_DATA_KEY}=none")
-    # flag_none_item.search_node = mw.col.group_searches(node, custom_node, joiner="AND")
+    if pointVersion() >= 231000:
+        flag_none_item = next(
+            (
+                child
+                for child in flag_root.children
+                if child.item_type == SidebarItemType.FLAG_NONE
+            ),
+            None,
+        )
+        node = flag_none_item.search_node
+        custom_node = SearchNode(parsable_text=f"-has-cd:{CUSTOM_DATA_KEY}")
+        flag_none_item.search_node = mw.col.group_searches(
+            node, custom_node, joiner="AND"
+        )
 
 
 def on_config() -> None:
