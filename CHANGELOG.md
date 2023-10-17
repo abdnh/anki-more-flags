@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.6] - 2023-10-17
+
+### Added
+
+-   Make the "No Flag" sidebar item recognize custom flags (Only works on Anki 23.10+).
+
 ## [0.0.5] - 2023-09-08
 
 ### Fixed
@@ -43,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release.
 
+[0.0.6]: https://github.com/abdnh/anki-more-flags/compare/0.0.5...0.0.6
 [0.0.5]: https://github.com/abdnh/anki-more-flags/compare/0.0.4...0.0.5
 [0.0.4]: https://github.com/abdnh/anki-more-flags/compare/0.0.3...0.0.4
 [0.0.3]: https://github.com/abdnh/anki-more-flags/compare/0.0.2...0.0.3
