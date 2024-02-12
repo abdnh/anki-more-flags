@@ -370,8 +370,8 @@ def after_flag_tree_build(self: SidebarTreeView, root: SidebarItem) -> None:
 
 
 def on_config() -> None:
-    dialog = ConfigDialog(mw)
-    dialog.open()
+    dialog = ConfigDialog(None)
+    dialog.exec()
 
 
 def patch() -> None:
