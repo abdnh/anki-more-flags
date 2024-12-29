@@ -27,15 +27,15 @@ jobs:
               run: .github/workflows/install_deps.sh
 
             - name: Create packages
-              run: make
+              run: make vendor && make
 
             - name: Extract changes
               shell: bash
               run: |
-                  python .github/workflows/extract_changes.py ${{ github.ref }} > build/RELEASE.md
+                  python -m ankiscripts.changes ${{ github.ref }} > build/RELEASE.md
 
             - name: Release
-              uses: softprops/action-gh-release@v1
+              uses: softprops/action-gh-release@v2
               if: startsWith(github.ref, 'refs/tags/')
               with:
                   files: build/*.ankiaddon
