@@ -2,11 +2,12 @@ from typing import Optional, cast
 
 import webcolors
 from aqt.qt import *
-from aqt.utils import askUser, restoreGeom, saveGeom, showInfo
+from aqt.utils import askUser, showInfo
 
 from ..config import CustomFlag, config
-from ..consts import ADDON_DIR, ADDON_MODULE, ADDON_NAME
+from ..consts import consts
 from ..forms.config import Ui_Dialog
+from ..gui.dialog import Dialog
 
 
 def qcolor_to_hex(color: QColor) -> str:
@@ -37,7 +38,7 @@ class FlagColorButton(QPushButton):
 
     def on_clicked(self) -> None:
         new_color = QColorDialog.getColor(
-            self.color, self, f"{ADDON_NAME} - Select Color"
+            self.color, self, f"{consts.name} - Select Color"
         )
         if new_color.isValid():
             self.color = new_color
@@ -63,7 +64,7 @@ class FlagShortcutWidget(QWidget):
         )
         hbox.addWidget(sequence_edit)
         clear_button = QPushButton(self)
-        clear_button.setIcon(QIcon(str(ADDON_DIR / "icons" / "x.svg")))
+        clear_button.setIcon(QIcon(str(consts.dir / "icons" / "x.svg")))
         clear_button.setMaximumSize(16, 16)
         qconnect(clear_button.clicked, sequence_edit.clear)
         hbox.addWidget(clear_button)
@@ -138,19 +139,15 @@ QTableView::item {
         self.setRowHeight(i, 40)
 
 
-class ConfigDialog(QDialog):
-    GEOM_KEY = f"{ADDON_MODULE}_config"
-
+class ConfigDialog(Dialog):
     def __init__(self, parent: QWidget):
-        super().__init__(parent)
         self.dirty = False
-        self.setup_ui()
+        super().__init__(parent)
 
     def setup_ui(self) -> None:
         self.form = Ui_Dialog()
         self.form.setupUi(self)
-        restoreGeom(self, self.GEOM_KEY)
-        self.setWindowTitle(f"{ADDON_NAME} - Config")
+        self.setWindowTitle(f"{consts.name} - Config")
         self.setMinimumSize(600, 500)
         self.setContentsMargins(0, 0, 0, 0)
         self.flag_list = FlagListWidget(self)
@@ -160,6 +157,7 @@ class ConfigDialog(QDialog):
         qconnect(self.form.new_button.clicked, self.on_new)
         qconnect(self.form.delete_button.clicked, self.on_delete)
         qconnect(self.flag_list.itemChanged, self.on_item_changed)
+        super().setup_ui()
 
     def on_item_changed(self, item: Optional[QTableWidgetItem] = None) -> None:
         self.dirty = True
@@ -180,7 +178,7 @@ class ConfigDialog(QDialog):
         config.flags = new_flags
         config["show_flag_labels"] = self.form.show_flag_labels.isChecked()
         showInfo(
-            "Changes will take effect when you restart Anki.", self, title=ADDON_NAME
+            "Changes will take effect when you restart Anki.", self, title=consts.name
         )
 
     def on_save(self) -> None:
@@ -207,8 +205,7 @@ class ConfigDialog(QDialog):
             super().keyPressEvent(event)
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        saveGeom(self, self.GEOM_KEY)
         if self.dirty:
-            if askUser("Save changes?", self, title=ADDON_NAME):
+            if askUser("Save changes?", self, title=consts.name):
                 self.save()
         return super().closeEvent(event)

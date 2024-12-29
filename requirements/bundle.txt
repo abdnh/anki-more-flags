@@ -1,2 +1,16 @@
-webcolors==1.13
+ankiutils @ git+https://github.com/abdnh/ankiutils@63a07edafe12ae1e3f967b1c28177319132d4669
+    # via -r requirements/bundle.in
+certifi==2024.2.2
+    # via
+    #   ankiutils
+    #   sentry-sdk
+sentry-sdk==1.14.0
+    # via
+    #   -r requirements/bundle.in
+    #   ankiutils
+urllib3==2.2.1
+    # via
+    #   ankiutils
+    #   sentry-sdk
+webcolors==24.11.1
     # via -r requirements/bundle.in

@@ -1,2 +1,4 @@
 [run]
 omit = src/forms/*,src/vendor/*
+[run]
+omit = src/forms/*,src/vendor/*
