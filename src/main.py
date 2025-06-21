@@ -7,7 +7,7 @@ from anki.cards import Card, CardId
 from anki.collection import Collection, OpChanges, OpChangesWithCount, SearchNode
 from anki.hooks import wrap
 from anki.utils import pointVersion
-from aqt import appVersion, colors, gui_hooks, mw
+from aqt import colors, gui_hooks, mw
 from aqt.browser import (
     Browser,
     CellRow,
@@ -39,20 +39,19 @@ except ImportError:
 from .config import CustomFlag, config
 from .gui.config import ConfigDialog
 
-anki_version = tuple(int(p) for p in appVersion.split("."))
 original_flags_count = 0
 CUSTOM_DATA_KEY = "cf"
 
 
 def supports_custom_data_prop_search() -> bool:
-    return anki_version >= (2, 1, 64)
+    return pointVersion() >= 64
 
 
 def anki_color_for_custom_flag(flag: CustomFlag) -> Dict[str, str]:
     # NOTE: Format changed to dict in 2.1.55: https://github.com/ankitects/anki/commit/0c340c4f741c89bcc80f987ee236d506de6a1ad2
     color = (
         (flag.color_light, flag.color_dark)
-        if anki_version < (2, 1, 55)
+        if pointVersion() < 55
         else {"light": flag.color_light, "dark": flag.color_dark}
     )
     return cast(Dict[str, str], color)
@@ -61,7 +60,7 @@ def anki_color_for_custom_flag(flag: CustomFlag) -> Dict[str, str]:
 def load_custom_flags(self: FlagManager) -> None:
     global original_flags_count
     original_flags_count = len(self._flags)
-    path = ":/icons/flag.svg" if anki_version < (2, 1, 55) else "icons:flag-variant.svg"
+    path = ":/icons/flag.svg" if pointVersion() < 55 else "icons:flag-variant.svg"
     if hasattr(colors, "FG_DISABLED"):
         color = colors.FG_DISABLED
     else:
